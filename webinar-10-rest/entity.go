@@ -1,7 +1,7 @@
 package main
 
 type Wallet struct {
-	ID         int
+	ID         string
 	HolderName string
 	Amount     int
 }
