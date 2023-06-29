@@ -9,7 +9,8 @@ import (
 )
 
 // /wallets - GET, POST
-// /wallets/{ID} - GET, PUT, DELETE
+// /wallets/{id} - GET, DELETE
+// /wallets/{id}/amount - PUT
 
 // /exchange - GET
 
