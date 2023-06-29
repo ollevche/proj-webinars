@@ -16,6 +16,11 @@ import (
 func main() {
 	r := mux.NewRouter()
 
+	exchangeRes := &exchangeResource{}
+
+	r.HandleFunc("/exchange", exchangeRes.getExchange).
+		Methods(http.MethodGet)
+
 	walletRes := &walletResource{
 		storage: NewStorage(),
 	}
@@ -32,6 +37,44 @@ func main() {
 	log.Default().Println("Starting server ...")
 
 	log.Fatal(http.ListenAndServe(":8080", r))
+}
+
+// api.frankfurter.app
+// /latest?from=USD&to=EUR
+
+const frankfurterURL = "https://api.frankfurter.app/latest?from=USD&to=EUR"
+
+type exchangeResource struct {
+}
+
+func (er *exchangeResource) getExchange(w http.ResponseWriter, r *http.Request) {
+	resp, err := http.Get(frankfurterURL)
+	if err != nil {
+		log.Default().Printf("Failed to get exchange data: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		log.Default().Printf("Got non-ok resp status from exchange: %v", resp.Status)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	type respBody struct {
+		Rates map[string]float64 `json:"rates"`
+	}
+
+	var rates respBody
+
+	err = json.NewDecoder(resp.Body).Decode(&rates)
+	if err != nil {
+		log.Default().Printf("Failed to parse exchange response body: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	respondWithJSON(w, rates)
 }
 
 type walletResource struct {
