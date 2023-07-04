@@ -13,7 +13,7 @@ type Args struct {
 	A, B int
 }
 
-type Calculator int
+type Calculator struct{}
 
 func (c *Calculator) Add(args *Args, result *int) error {
 	log.Info().Msg("Operation: Add")
