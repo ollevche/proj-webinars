@@ -6,13 +6,19 @@ type OrderNotifier interface {
 	NotifyAll(order any)
 }
 
-type Service struct {
-	notifier OrderNotifier
+type OrderPublisher interface {
+	Publish(event any)
 }
 
-func NewService(on OrderNotifier) *Service {
+type Service struct {
+	notifier  OrderNotifier
+	publisher OrderPublisher
+}
+
+func NewService(on OrderNotifier, op OrderPublisher) *Service {
 	return &Service{
-		notifier: on,
+		notifier:  on,
+		publisher: op,
 	}
 }
 
@@ -24,7 +30,13 @@ func (s *Service) ProcessOrder() {
 
 	// other order processing logic
 
-	s.notifier.NotifyAll("order_processed")
+	if s.notifier != nil {
+		s.notifier.NotifyAll("order_processed")
+	}
+
+	if s.publisher != nil {
+		s.publisher.Publish("order_processed")
+	}
 
 	fmt.Println("Finished order processing")
 }

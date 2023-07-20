@@ -3,41 +3,43 @@ package main
 import (
 	"fmt"
 	"time"
-	"webinar/pkg/observer"
 	"webinar/pkg/order"
+	"webinar/pkg/pubsub"
 )
 
-type LoggerObserver struct {
+type LoggingSubscriber struct {
 }
 
-func (l LoggerObserver) GetNotified(subject any) {
-	fmt.Printf("Logger observer got notified about %v\n", subject)
+func (l LoggingSubscriber) GetNotified(subject any) {
+	fmt.Printf("Logger subscriber got notified about %v\n", subject)
 }
 
-func (l LoggerObserver) GetID() string {
+func (l LoggingSubscriber) GetID() string {
 	return "logger"
 }
 
-type UserNotifierObserver struct {
+type UserNotifierSubscriber struct {
 }
 
-func (l UserNotifierObserver) GetNotified(subject any) {
+func (l UserNotifierSubscriber) GetNotified(subject any) {
 	time.Sleep(2 * time.Second)
-	fmt.Printf("User notifier observer got notified about %v\n", subject)
+	fmt.Printf("User notifier subscriber got notified about %v\n", subject)
 }
 
-func (l UserNotifierObserver) GetID() string {
+func (l UserNotifierSubscriber) GetID() string {
 	return "user_notifier"
 }
 
 func main() {
-	orderObserver := observer.NewObserverRegistrar()
+	pubsubService := pubsub.NewService()
 
-	orderObserver.Register(LoggerObserver{})
+	pubsubService.AddSubscriber(LoggingSubscriber{})
 
-	orderObserver.Register(UserNotifierObserver{})
+	pubsubService.AddSubscriber(UserNotifierSubscriber{})
 
-	orderService := order.NewService(orderObserver)
+	orderService := order.NewService(nil, pubsubService)
 
 	orderService.ProcessOrder()
+
+	time.Sleep(3 * time.Second)
 }
