@@ -7,7 +7,7 @@ type OrderNotifier interface {
 }
 
 type OrderPublisher interface {
-	Publish(event any)
+	Publish(event any) <-chan error
 }
 
 type Service struct {
@@ -35,7 +35,14 @@ func (s *Service) ProcessOrder() {
 	}
 
 	if s.publisher != nil {
-		s.publisher.Publish("order_processed")
+		errChan := s.publisher.Publish("order_processed")
+		go func() {
+			for err := range errChan {
+				if err != nil {
+					fmt.Println("Failed to publish order processed event")
+				}
+			}
+		}()
 	}
 
 	fmt.Println("Finished order processing")

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"time"
 	"webinar/pkg/order"
@@ -10,8 +11,9 @@ import (
 type LoggingSubscriber struct {
 }
 
-func (l LoggingSubscriber) GetNotified(subject any) {
+func (l LoggingSubscriber) GetNotified(subject any) error {
 	fmt.Printf("Logger subscriber got notified about %v\n", subject)
+	return nil
 }
 
 func (l LoggingSubscriber) GetID() string {
@@ -21,9 +23,10 @@ func (l LoggingSubscriber) GetID() string {
 type UserNotifierSubscriber struct {
 }
 
-func (l UserNotifierSubscriber) GetNotified(subject any) {
+func (l UserNotifierSubscriber) GetNotified(subject any) error {
 	time.Sleep(2 * time.Second)
 	fmt.Printf("User notifier subscriber got notified about %v\n", subject)
+	return errors.New("unable to process notification")
 }
 
 func (l UserNotifierSubscriber) GetID() string {
@@ -41,5 +44,9 @@ func main() {
 
 	orderService.ProcessOrder()
 
-	time.Sleep(3 * time.Second)
+	orderService.ProcessOrder()
+
+	pubsubService.Stop()
+
+	time.Sleep(2 * time.Second)
 }
