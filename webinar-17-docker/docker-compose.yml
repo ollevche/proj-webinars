@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    environment:
+      WORD_TO_PRINT: 'forest'
+  db:
+    image: mysql
+    environment:
+      MYSQL_DATABASE: 'my-app'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      - '3306:3306'
