@@ -7,6 +7,29 @@ import (
 
 func main() {
 	entity := &DTONewEan{}
+
+	tags, err := GetTagsJSON(entity)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	fmt.Println(tags)
+
+	var g jsonTagGetter
+
+	tags, err = g.Get(entity)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	fmt.Println(tags)
+
+	tags, err = g.Get(entity)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	fmt.Println(tags)
 }
 
 func panicExample() {

@@ -7,7 +7,7 @@ type DTONewEan struct {
 	ArtNr     *string `json:"ArtNr"`
 	LKZ       string  `json:"LKZ"`
 	EAN       int64   `json:"EAN"`
-	Exclude   *uint8  `json:"Exclude"`
+	Exclude   *uint8  `json:"Exclude,omitempty"`
 	LoschFlag uint8   `json:"LoschFlag"`
 	DLNr      *int    `json:"DLNr"`
 	SA        string  `json:"SA"`
