@@ -30,6 +30,16 @@ func main() {
 	}
 
 	fmt.Println(tags)
+
+	fmt.Println(GetTableName(entity))
+
+	fmt.Println("POPULATE")
+
+	fmt.Println(entity)
+
+	Populate(entity)
+
+	fmt.Println(entity)
 }
 
 func panicExample() {
